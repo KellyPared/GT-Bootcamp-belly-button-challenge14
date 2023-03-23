@@ -76,7 +76,8 @@ function plots(menu_id) {
         var otu_labels = filtered_samples.otu_labels;
         console.log(otu_labels);
 
-        washing_frequency = filtered_metadata.wfreq;
+        var washing_frequency = filtered_metadata.wfreq;
+        console.log(washing_frequency)
 
         //get the values for x but need to use a filter.
         var sample_values = filtered_samples.sample_values;
@@ -89,7 +90,7 @@ function plots(menu_id) {
           orientation: 'h',
           text: otu_labels.slice(0,10).reverse(),
           marker: {
-            color: 'rgb(0,71,171)'
+            color: 'rgb(70, 130, 180)'
           }
         }];
 
@@ -117,18 +118,28 @@ function plots(menu_id) {
         Plotly.newPlot('bubble', bubble_graph, bubble_layout);
          
         
-        var guage_data = [
-          {
-            domain: washing_frequency,
-            value: 270,
+        var gauge_data = [{
+            domain: { x: [0, 1], y: [0, 1] },
+            value: washing_frequency,
             title: { text: "Belly Button Washing Frequency" },
             type: "indicator",
-            mode: "gauge+number"
-          }
-        ];
+            mode: "gauge+number",
+            gauge: {
+              axis: { range: [0,7] },
+              steps: [
+                { range: [0, 1], color: "#FFD700"  },
+                { range: [1, 2], color: "#E49B0F" },
+                { range: [2, 3], color: "#FF5733" },
+                { range: [3, 4], color: "#C70039" },
+                { range: [4, 5], color: "#900C3F" },
+                { range: [5, 6], color: "#581845" },
+                { range: [6, 7], color: "#301934" }
+              ],
+            }
+          }];
         
         var guage_layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
-        Plotly.newPlot('guage', gauge_data, guage_layout);
+        Plotly.newPlot('gauge', gauge_data, guage_layout);
   });
 
 }
