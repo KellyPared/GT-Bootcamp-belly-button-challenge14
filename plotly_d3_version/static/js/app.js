@@ -3,175 +3,134 @@ samplesData = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroo
 const dataPromise = d3.json(samplesData)
 console.log(dataPromise)
 
-var data = d3.json(samplesData).then(function(data) {
-  console.log(data)
+function init(){
+  //helps us to populate the dropmenu
 
-
-//Create a Dropdown menu - top 10 OTU's
-// select elements from Dropdown
-var names = data.names;
-  console.log(data.names);
-  // populate the dropdown menu items ??? How do I select only 10????
-  var dropdownMenu = d3.select('#selDataset');  // id="selDataset"
-    // define the varaiable names for the dropdown menu -check the log. 
-    //function is triggered (option)
-  names.forEach(function(name){dropdownMenu.append('option').text(name).property('value')});
-    // dropdownMenu.on('click', function(e, d) {
-    // d3.select(this)
-
-
-//Initialize Plots to start the page - default // set the dimensions and margins of the graph
-var margin = {top: 20, right: 30, bottom: 40, left: 90},
-width = 460 - margin.left - margin.right,
-height = 400 - margin.top - margin.bottom;
-
-// create initial plots
-// plots(init_id);
-
-// write the initial demographic info
-// demInfo(init_id);
-//var sampleValues = sample_values; initiate a fake plot.
-function init() {
-  data = [{
-    x: [1, 2],
-    y: [1, 2] }];
-
-Plotly.newPlot("plot", data);}
-// identify the initial value for the initial plots and info
-var init_id = names[0]
-  console.log(init_id)
-
-
-//get the values for the y bar chart and have it change the init_id
-var otuIds = 'data.samples.${init_id}.otu_ids';
-  console.log(otuIds);
-
-//get the values for text hover data otu_labels
-var otu_labels = 'data.samples.${init_id}.otu_labels';
-console.log(otu_labels)
-
-//get the values for x but need to use a filter.
-
-var sample_values = data.samples.sample_values;
-console.log(sample_values)
-// function findDuplicates(arr) {
-//   return arr.filter((currentValue, currentIndex) =>
-//   arr.indexOf(currentValue) !== currentIndex);
-// }
-
-
-// Create a Horizontal Bar Chart
-var bar_data = {
-    y: otuIds,
-    x: [4,2],
-    type: 'bar',
-    orientation: 'h',
-    text: otu_labels, //['4.17 below the mean', ], 
-    marker: {
-      color: 'rgb(142,124,195)'
-    }
-  };
-
-var bargraph = [bar_data];
-  
-var layout = {
-  title: 'Top 10 OTUs found in Individual',
-  font:{
-    family: 'Raleway, sans-serif'
-  },
-  showlegend: false,
-  xaxis: {
-    tickangle: -45
-  },
-  yaxis: {
-    zeroline: false,
-    gridwidth: 2
-  },
-  bargap :0.05
-};
- 
-Plotly.newPlot('bar', bargraph, layout);
-
-
-
-
-//Create a bubble chart
-  // id="bubble"
-  // Use otu_ids for x values
-  // Use sample_values for the y values
-  // Use sample_values for the marker size
-  // Use otu_ids for marker colors
-  // Use otu_labels for text values
-// Bubble Chart  
-var bubbleGraph = {
-  x: [1, 2, 3, 4],//otuIds
-  y: [10, 11, 12, 13],//samples_values
-  mode: 'markers',
-  marker: {
-    //color: otuIds,
-    size: sample_values
-  }
-};
-
-var bubble_data = [bubbleGraph];
-
-var layout = {
-  title: 'Sample Values of otu_ids',
-  showlegend: true,
-  height: 600,
-  width: 600
-};
-
-Plotly.newPlot('bubble', bubble_data, layout);
-
-// Make the Demographic Info - sample metadata
-// inidividuals demographic information
-// Display each key-value pair (dictionary) from metadata
-  //id
-  //ethnicity
-  //gender
-  //age
-  //bbtype
-  //wfreq 
-// var metaData = data.metadata
-//   console.log(metaData)
-
-var metadata = amplesData.metadata;
-console.log(amplesData.metadata);
-
-var bubbledata = [{
-        type: 'table',
-        header: {
-          align: "center",
-          line: {width: 1, color: 'black'},
-          fill: {color: "grey"},
-          font: {family: "Arial", size: 12, color: "white"}
-        },
-        cells: {
-          values: metadata,
-          align: "center",
-          line: {color: "black", width: 1},
-          font: {family: "Arial", size: 11, color: ["black"]}
+  var data = d3.json(samplesData).then(function(data) {
+    console.log(data)
+          //Create a Dropdown menu - top 10 OTU's
+          var names = data.names;
+            console.log(data.names);
+            // populate the dropdown menu items ??? How do I select only 10????
+            var dropdownMenu = d3.select('#selDataset');  // id="selDataset"
+              // define the varaiable names for the dropdown menu -check the log. 
+              //function is triggered (option)
+            names.forEach(function(name){dropdownMenu.append('option').text(name).property('value')});
+            plots(names[0]);
+            demographic_info(names[0]);
+           //only gets executed once
+  });
 }
-}]
+//this function will make the id change all the plots.
+function optionChanged(id) {
+  plots(id);
+  demographic_info(id);
+}
 
-Plotly.newPlot('sample-metadata', bubbledata);
-//Create a Gauge Chart - weekly washing frequency
-  //html id="gauge"
-  // values 0-9
-var guagedata = [
-  {
-    domain: { x: [0, 1], y: [0, 1] },
-    value: 270,
-    title: { text: "Speed" },
-    type: "indicator",
-    mode: "gauge+number"
-  }
-];
+function demographic_info(menu_id) {
+  
+  var data = d3.json(samplesData).then(function(data) {
+    console.log(data)
+        var metadata = data.metadata;
+        //grab the tags
+        var metaTag_appended = d3.select('#sample-metadata');  // id="selDataset"
+        //resets the tag and populate with what is pulled
+        metaTag_appended.html("")
 
-var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
-Plotly.newPlot('guage', gaugedata, layout);
-//Update all plots when new sample is selected.
+        //write a filter function to select the id from meta.
+        var filtered_metadata = metadata.filter(x => x.id==menu_id)[0]
+        console.log(filtered_metadata)
+        
+        //this updates the menu item and sets the metadata 
+        Object.entries(filtered_metadata).forEach(entry => {
+          const [key, value] = entry;
+          // console.log(key, value);
+          metaTag_appended.append('h5').text(`${key}:${value}`)
+        });
 
+           
+  });
 
-});
+}
+function plots(menu_id) {
+  //three plots
+  var data = d3.json(samplesData).then(function(data) {
+    console.log(data)
+        var metadata = data.metadata;
+        //grab the tags
+
+        //write a filter function to select the id from meta.
+        var filtered_metadata = metadata.filter(x => x.id==menu_id)[0]
+        console.log(filtered_metadata)
+        
+        var samplesData = data.samples;
+        //write a filter function to select the samples data 
+        var filtered_samples = samplesData.filter(x => x.id==menu_id)[0]
+        console.log(filtered_samples)
+        
+        //get the values for the y bar chart and have it change the init_id
+        var otuIds = filtered_samples.otu_ids;
+        console.log(otuIds);
+
+        //get the values for text hover data otu_labels
+        var otu_labels = filtered_samples.otu_labels;
+        console.log(otu_labels);
+
+        washing_frequency = filtered_metadata.wfreq;
+
+        //get the values for x but need to use a filter.
+        var sample_values = filtered_samples.sample_values;
+        console.log(sample_values)
+
+        var bardata = [{
+          y: otuIds.slice(0,10).map(x => `OTU ${x}`).reverse(),
+          x: sample_values.slice(0,10).reverse(),
+          type: 'bar',
+          orientation: 'h',
+          text: otu_labels.slice(0,10).reverse(),
+          marker: {
+            color: 'rgb(0,71,171)'
+          }
+        }];
+
+        var barlayout = {
+          title: 'Top 10 OTUs found in Individual',
+        };
+        Plotly.newPlot('bar', bardata, barlayout);
+
+        var bubble_graph = [{
+          x: otuIds,
+          y: sample_values,
+          text: otu_labels,
+          mode: 'markers',
+          marker: {
+            color: otuIds,
+            size: sample_values
+          }
+        }];
+      
+        var bubble_layout = {
+          title: 'Sample Values of otu_ids',
+      
+        };
+        
+        Plotly.newPlot('bubble', bubble_graph, bubble_layout);
+         
+        
+        var guage_data = [
+          {
+            domain: washing_frequency,
+            value: 270,
+            title: { text: "Belly Button Washing Frequency" },
+            type: "indicator",
+            mode: "gauge+number"
+          }
+        ];
+        
+        var guage_layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+        Plotly.newPlot('guage', gauge_data, guage_layout);
+  });
+
+}
+
+init()
