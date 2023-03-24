@@ -127,13 +127,13 @@ function plots(menu_id) {
             gauge: {
               axis: { range: [0,7] },
               steps: [
-                { range: [0, 1], color: "#FFD700"  },
-                { range: [1, 2], color: "#E49B0F" },
-                { range: [2, 3], color: "#FF5733" },
-                { range: [3, 4], color: "#C70039" },
-                { range: [4, 5], color: "#900C3F" },
-                { range: [5, 6], color: "#581845" },
-                { range: [6, 7], color: "#301934" }
+                { range: [0, 1], color: "#ADD8E6"  },
+                { range: [1, 2], color: "#89CFF0" },
+                { range: [2, 3], color: "#6495ED" },
+                { range: [3, 4], color: "#0096FF"},
+                { range: [4, 5], color: "#6F8FAF"},
+                { range: [5, 6], color: "#0000FF" },
+                { range: [6, 7], color: "#0047AB" }
               ],
             }
           }];
